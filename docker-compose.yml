@@ -20,7 +20,7 @@ services:
 
   db:
     image: postgres:17-alpine
-    container_name: database
+    container_name: datamaster_db
     environment:
       - POSTGRES_PASSWORD=${DB_PASSWORD}
       - POSTGRES_USER=${DB_USER}
