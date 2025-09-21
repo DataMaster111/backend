@@ -1,7 +1,9 @@
-from fastapi import APIRouter
+from fastapi import FastAPI
+from api.v1 import router
 
-app = APIRouter()
 
+app = FastAPI()
+app.include_router(router=router)
 
 @app.get("/test")
 async def tets():
