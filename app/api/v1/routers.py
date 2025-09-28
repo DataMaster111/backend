@@ -1,5 +1,5 @@
 import pandas as pd
-
+from openai import OpenAI
 from fastapi import APIRouter, UploadFile, HTTPException, status, Response
 
 from api.schemas import DBRequest
@@ -27,9 +27,40 @@ async def load_files(file: UploadFile):
     Количество записей в файле - {count_str}. 
     Немного записей для примера:
     {df.head(20).to_string()}"""
+    user_prompt = f"""
+        Ты - AI ассистент инженера данных. Проанализируй этот файл:
 
-    return Response(content=result, media_type="text/plain")
+        ИНФОРМАЦИЯ О ФАЙЛЕ:
+        {Response(content=result, media_type="text/plain")}
 
+        Дай рекомендации по:
+        1. В какой БД хранить (PostgreSQL, ClickHouse, HDFS)
+        2. Как оптимизировать структуру
+        3. Какие ETL-процессы предложить
+
+        Ответь кратко на русском.
+        """
+    client = OpenAI(
+        base_url="http://localhost:11434/v1",
+        api_key="ollama"
+    )
+
+    # Создание запроса к модели
+    response = client.chat.completions.create(
+        model="yandex/YandexGPT-5-Lite-8B-instruct-GGUF",
+        messages=[
+            {
+                "role": "system",
+                "content": "Ты - эксперт по данным. Отвечай на русском."
+            },
+            {
+                "role": "user",
+                "content": user_prompt
+            }
+        ]
+    )
+    recomindations = f"""Рекомендации ассистента: {response.choices[0].message.content}"""
+    return Response(content=recomindations, media_type="text/plain")
 
 @router.post("/load_db")
 async def load_db(connection_str: DBRequest):
