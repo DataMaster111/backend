@@ -4,8 +4,9 @@ from typing import Dict, Any, List
 
 class BaseConnector(ABC):
 
-    def __init__(self, connector_params: Dict[str: Any]):
-        self.connector_params = connector_params
+    def __init__(self, connection_params: Dict[str: Any]):
+        self.connection_params = connection_params
+        self.connection = None
 
     @abstractmethod
     def connect(self):
