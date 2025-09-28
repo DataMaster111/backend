@@ -59,8 +59,8 @@ async def load_files(file: UploadFile):
             }
         ]
     )
-    recomindations = f"""Рекомендации ассистента: {response.choices[0].message.content}"""
-    return Response(content=recomindations, media_type="text/plain")
+    recommendations = f"""Рекомендации ассистента: {response.choices[0].message.content}"""
+    return Response(content=recommendations, media_type="text/plain")
 
 @router.post("/load_db")
 async def load_db(connection_str: DBRequest):
