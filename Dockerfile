@@ -1,10 +1,14 @@
 FROM python:3.11-slim-bullseye
-
+RUN apt-get update
+RUN apt-get install build-essential cmake -y
 WORKDIR /usr/src/app
 
 COPY requirements.txt .
 
-RUN pip install --no-cache-dir -r requirements.txt
+ENV CMAKE_ARGS="-DCMAKE_CXX_FLAGS=-pthread"
+
+# Прописать --no-cache-dir
+RUN pip install -r requirements.txt
 
 COPY ./app .
 
